@@ -1,4 +1,3 @@
-from flask import abort
 from flask_restful import marshal_with, Resource, fields
 from flask_restful.reqparse import RequestParser
 from source.models import Mailbox as MailboxModel , MailboxKey, Session
@@ -9,17 +8,18 @@ mailbox_key_fields = {
     'rfid':     fields.String
 }
 detailed_mailbox_fields = {
-    'id':       fields.String,
-    'keys':     fields.List(fields.Nested(mailbox_key_fields)),
-    'has_mail': fields.Boolean,
-    'is_closed':  fields.Boolean,
-    'opens_in': fields.Integer
+    'id':           fields.String,
+    'keys':         fields.List(fields.Nested(mailbox_key_fields)),
+    'has_mail':     fields.Boolean,
+    'is_closed':    fields.Boolean,
+    'opens_in':     fields.Integer,
+    'display_text': fields.String
 }
 
 list_mailbox_fields = {
-    'id':       fields.Integer,
-    'has_mail': fields.Boolean,
-    'is_closed': fields.Boolean
+    'id':           fields.Integer,
+    'has_mail':     fields.Boolean,
+    'is_closed':    fields.Boolean
 }
 
 

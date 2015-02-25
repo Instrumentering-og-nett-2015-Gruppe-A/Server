@@ -16,7 +16,7 @@ class Mailbox(Base):
     has_mail = Column(Boolean, default=False)
     is_closed = Column(Boolean, default=False)
     opens_in = Column(BigInteger, default= None)
-
+    display_text = Column(String, default="")
 
 
 class MailboxKey(Base):
