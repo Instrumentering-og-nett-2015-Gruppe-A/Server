@@ -10,8 +10,11 @@ def initdb():
     Base.metadata.create_all(bind=engine)
 
 @manager.command
-def runserver():
-    app.run(debug=True)
+def runserver(is_public=False):
+    if is_public:
+        app.run(host='0.0.0.0', debug=True)
+    else:
+        app.run(debug=True)
 
 if __name__ == '__main__':
     manager.run()
