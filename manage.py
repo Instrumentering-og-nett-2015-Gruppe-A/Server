@@ -10,7 +10,7 @@ def initdb():
     Base.metadata.create_all(bind=engine)
 
 @manager.command
-def runserver(is_public=False):
+def runserver(is_public):
     if is_public:
         app.run(host='0.0.0.0', debug=True)
     else:
