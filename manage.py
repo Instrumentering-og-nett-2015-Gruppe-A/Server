@@ -6,7 +6,7 @@ manager = Manager(app)
 
 
 @manager.command
-def initdb(in_memory):
+def initdb():
     Base.metadata.create_all(bind=engine)
 
 @manager.command
