@@ -11,12 +11,15 @@ mailbox_key_fields = {
 detailed_mailbox_fields = {
     'id':       fields.String,
     'keys':     fields.List(fields.Nested(mailbox_key_fields)),
-    'has_mail': fields.Boolean
+    'has_mail': fields.Boolean,
+    'is_closed':  fields.Boolean,
+    'opens_in': fields.Integer
 }
 
 list_mailbox_fields = {
     'id':       fields.Integer,
-    'has_mail': fields.Boolean
+    'has_mail': fields.Boolean,
+    'is_closed': fields.Boolean
 }
 
 
