@@ -22,5 +22,5 @@ class Mailbox(Base):
 class MailboxKey(Base):
     __tablename__ = 'mailboxkeys'
     rfid = Column(String, primary_key=True)
-    mailbox_id = Column(Integer, ForeignKey('mailboxes.id'))
+    mailbox_id = Column(Integer, ForeignKey('mailboxes.id'), primary_key=True)
     mailbox = relationship("Mailbox", backref=backref('keys'))
