@@ -4,10 +4,12 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, BigInteger
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlite3 import dbapi2 as sqlite
 
-
-engine = create_engine('sqlite+pysqlite:///:database.db:', module=sqlite)
 Base = declarative_base()
+engine = create_engine('sqlite+pysqlite:///:database.db:', module=sqlite)
 Session = sessionmaker(bind=engine)
+
+
+
 
 
 class Mailbox(Base):
@@ -22,5 +24,5 @@ class Mailbox(Base):
 class MailboxKey(Base):
     __tablename__ = 'mailboxkeys'
     rfid = Column(String, primary_key=True)
-    mailbox_id = Column(Integer, ForeignKey('mailboxes.id'), primary_key=True)
+    mailbox_id = Column(Integer, ForeignKey('mailboxes.id'), primary_key=True, autoincrement=True)
     mailbox = relationship("Mailbox", backref=backref('keys'))
