@@ -16,5 +16,6 @@ api.add_resource(Mailboxes.Mailbox, '/mailbox/<int:mailbox_id>', endpoint="mailb
 def broadcast_server_address():
     address = socket.gethostbyname(socket.gethostname())
     print address
-    udp_broadcast(address)
+    while(True)
+        udp_broadcast(address)
     return Response(status=200)

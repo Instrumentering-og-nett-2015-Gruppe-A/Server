@@ -10,6 +10,11 @@ def initdb():
     Base.metadata.create_all(bind=engine)
 
 @manager.command
+def init_and_run():
+    initdb()
+    runserver()
+    
+@manager.command
 def runserver():
     app.run(debug=True)
 
