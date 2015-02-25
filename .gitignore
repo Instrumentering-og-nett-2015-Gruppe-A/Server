@@ -1,3 +1,6 @@
-.idea/
+:database.db:
+.idea
 venv/
 .pyc
+*.pyc
+*__init__.py
