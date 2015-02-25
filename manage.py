@@ -1,20 +1,26 @@
 from flask_script import Manager
-from flask import Flask
-from source.models import Base,engine
-from source.server import app
-manager = Manager(app)
+from source.common.models import Base,engine
+from source.api.api_server import app as rest_app
+from source.website.web_server import app as web_app
 
-
+manager = Manager(rest_app)
 @manager.command
-def initdb():
+def init_db():
     Base.metadata.create_all(bind=engine)
 
 @manager.command
-def runserver(is_public):
+def run_api_server(is_public):
     if is_public:
-        app.run(host='0.0.0.0', debug=True)
+        rest_app.run(host='0.0.0.0', debug=True)
     else:
-        app.run(debug=True)
+        rest_app.run(debug=True)
+
+@manager.command
+def run_web_server(is_public):
+    if is_public:
+        web_app.run(host='0.0.0.0', debug=True)
+    else:
+        web_app.run(debug=True)
 
 if __name__ == '__main__':
     manager.run()

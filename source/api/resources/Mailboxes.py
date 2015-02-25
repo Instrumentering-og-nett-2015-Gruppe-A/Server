@@ -1,7 +1,7 @@
-from flask_restful import marshal_with, Resource, fields, abort
+from flask_restful import marshal_with, Resource, fields
 from flask_restful.reqparse import RequestParser
-from source.models import Mailbox as MailboxModel , MailboxKey, Session
-from source.utils import get_or_404
+from source.common.models import Mailbox as MailboxModel , MailboxKey, Session
+from source.common.utils import get_or_404
 
 mailbox_key_fields = {
     'rfid':     fields.String

@@ -9,9 +9,6 @@ engine = create_engine('sqlite+pysqlite:///:database.db:', module=sqlite)
 Session = sessionmaker(bind=engine)
 
 
-
-
-
 class Mailbox(Base):
     __tablename__ = 'mailboxes'
     id = Column(Integer, primary_key=True)

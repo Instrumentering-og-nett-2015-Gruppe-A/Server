@@ -9,8 +9,8 @@ from source.common.udp_brodcast import send as udp_broadcast
 app = Flask(__name__)
 api = Api(app)
 
-api.add_resource(Mailboxes.Mailbox, '/mailbox', endpoint="list_mailbox")
-api.add_resource(Mailboxes.Mailbox, '/mailbox/<int:mailbox_id>', endpoint="mailbox")
+api.add_resource(Mailboxes.Mailbox, '/api/mailbox', endpoint="list_mailbox")
+api.add_resource(Mailboxes.Mailbox, '/api/mailbox/<int:mailbox_id>', endpoint="mailbox")
 
 @app.route('/broadcast/')
 def broadcast_server_address():
