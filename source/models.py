@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlite3 import dbapi2 as sqlite
 
 
-engine = create_engine('sqlite://', module=sqlite)
+engine = create_engine('sqlite+pysqlite:///:database.db:', module=sqlite)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
