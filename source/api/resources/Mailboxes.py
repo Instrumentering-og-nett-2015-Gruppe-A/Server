@@ -1,10 +1,9 @@
 from flask_restful import marshal_with, Resource, fields
 from flask_restful.reqparse import RequestParser
-from source.models import Mailbox as MailboxModel , MailboxKey, Session
-from source.utils import get_or_404
+from source.common.models import Mailbox as MailboxModel , MailboxKey, Session
+from source.common.utils import get_or_404
 
 mailbox_key_fields = {
-    'id':       fields.Integer,
     'rfid':     fields.String
 }
 detailed_mailbox_fields = {
@@ -28,7 +27,8 @@ class Mailbox(Resource):
     def __init__(self):
         super(Mailbox, self).__init__()
         self.parser = RequestParser()
-        self.parser.add_argument('rfid', type=str, dest='rfid', location='json', required=True)
+        self.parser.add_argument('rfid', type=str, dest='rfid', location='json')
+        self.parser.add_argument('has_mail', type=bool, dest='has_mail', location='json')
 
     @marshal_with(detailed_mailbox_fields)
     def post(self):
@@ -55,17 +55,19 @@ class Mailbox(Resource):
 
     @marshal_with(detailed_mailbox_fields)
     def put(self, mailbox_id):
-        args = self.parser.parse_args(strict=True)
+        args = self.parser.parse_args()
         new_rfid = args.rfid
+        has_mail = args.has_mail
         session = Session()
+
         mailbox = get_or_404(session.query(MailboxModel), mailbox_id)
+        if new_rfid:
+            if not new_rfid in [key.rfid for key in mailbox.keys]:
+                key = MailboxKey()
+                key.mailbox = mailbox
+                key.rfid = new_rfid
+        if has_mail != None:
+            mailbox.has_mail = has_mail
 
-        if new_rfid in [key.rfid for key in mailbox.keys]:
-            return mailbox
-
-        key = MailboxKey()
-        key.mailbox = mailbox
-        key.rfid = new_rfid
-        session.add(key)
         session.commit()
         return mailbox
