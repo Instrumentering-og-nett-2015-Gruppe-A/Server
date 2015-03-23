@@ -5,7 +5,7 @@
     <div class="credentials_form">
         <h2>Sign in</h2>
          {{ render_form(form, action_url='', action_text='Login')}}
-
+         <a class="right" href="{{ url_for('account_recovery') }}">Forgot your password?</a>
     </div>
 
 {% endblock %}

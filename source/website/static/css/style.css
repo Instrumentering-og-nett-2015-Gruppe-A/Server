@@ -33,6 +33,11 @@ body{
     margin: 0 auto;
     text-align: center;
 }
+
+.glyph-large{
+    font-size: 15em;
+
+}
 .mailbox-container{
     margin-bottom: 30px;
 }

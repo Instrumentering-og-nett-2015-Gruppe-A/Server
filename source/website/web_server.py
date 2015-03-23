@@ -10,10 +10,11 @@ from pip._vendor import requests
 from source.common.models import Session, Mailbox
 from source.common.utils import get_or_404
 from forms import MailboxLCDTextForm, LoginForm, UserForm, ChangePasswordForm, CreateAdministratorForm, \
-    SelectPasswordForm, AssignMailboxForm
+    SelectPasswordForm, AssignMailboxForm, AccountRecoveryForm
 from source.common.models import User, Session
 from source.website.decorators import admin_required
-from source.website.util import send_user_confirmation_mail, get_username_from_confirmation_token
+from source.website.util import send_user_confirmation_mail, get_username_from_confirmation_token, \
+    send_account_recovery_mail, get_username_from_recovery_token
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import object_session, eagerload, joinedload
 from sqlalchemy.orm.exc import NoResultFound
@@ -120,7 +121,7 @@ def administrate_mailboxes():
 
     mailboxes = session.query(Mailbox).options(joinedload('user')).all()
 
-    users = session.query(User).filter(User.is_admin==False).filter(User.mailbox == None).all()
+    users = session.query(User).filter(User.is_admin==False).filter(User.mailbox == None).filter(User.needs_activation==False).all()
     return render_template('admin/mailboxes.html', mailboxes=mailboxes, users=users, form=AssignMailboxForm())
 
 @app.route('/administrate/mailboxes/<int:mailbox_id>/free')
@@ -145,16 +146,26 @@ def administrate():
 def view_mailbox():
     if current_user.is_admin:
         abort(401)
-
     if current_user.mailbox == None:
         return render_template('view_mailbox.html')
 
-    session = Session()
     mailbox = current_user.mailbox
-    form = MailboxLCDTextForm(obj=mailbox)
+    if request.method =='POST':
+        form = MailboxLCDTextForm(request.form)
+    else:
+        form = MailboxLCDTextForm(obj=mailbox)
+
+
+
     if form.validate_on_submit():
-        mailbox.display_text = '%s\n%s' % (form.first_line, form.second_line)
+        session = object_session(mailbox)
+        if not session:
+            session = Session()
+            session.add(mailbox)
+        mailbox.display_text = '%s\n%s' % (form.first_line.data, form.second_line.data)
+        print mailbox.display_text
         session.commit()
+        flash('LCD updated', 'success')
 
     return render_template('view_mailbox.html', mailbox=mailbox, form=form)
 
@@ -240,6 +251,50 @@ def confirm(confirmation_token):
         return redirect(url_for('login'))
 
     return render_template('user/select_password.html', form=form)
+
+@app.route('/reset', methods=['GET', 'POST'])
+def account_recovery():
+    if request.method == 'POST':
+        form = AccountRecoveryForm(request.form)
+    else:
+        form = AccountRecoveryForm()
+
+    if form.validate_on_submit():
+        session = Session()
+        status = False
+
+        #There may be multiple accounts associated with this email.
+        for user in session.query(User).filter(User.email==form.email.data).all():
+            if user.is_active():
+                status = send_account_recovery_mail(app, user)
+        if  status:
+            flash('Account recovery instructions has been sent to %s' % user.email, 'success')
+        else:
+            flash('Unable to send confirmation to %s' % user.email, 'danger')
+
+    return render_template('user/reset_password.html', form=form)
+
+@app.route('/reset/<recovery_token>', methods=['GET', 'POST'])
+def recover_account(recovery_token):
+    username = get_username_from_recovery_token(app, recovery_token)
+    if not username:
+        flash('Invalid recovery token.', 'danger')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        form = SelectPasswordForm(request.form)
+    else:
+        form = SelectPasswordForm()
+
+    if form.validate_on_submit():
+        session = Session()
+        user = session.query(User).filter(User.username==username).first()
+        user.change_password(form.password.data)
+        flash('Password reset. You may now login.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('/user/select_password.html', form=form)
+
 
 @app.route("/logout")
 @login_required

@@ -18,6 +18,18 @@ class Mailbox(Base):
     opens_in = Column(BigInteger, default= None)
     display_text = Column(String, default="")
 
+    @property
+    def first_line(self):
+        return self.display_text.split('\n')[0]
+
+    @property
+    def second_line(self):
+        lines = self.display_text.split('\n')
+        if len(lines) > 1:
+            return lines[1]
+        return ""
+
+
 
 class MailboxKey(Base):
     __tablename__ = 'mailboxkeys'
@@ -51,7 +63,7 @@ class User(Base):
         self.password_hash = generate_password_hash(new_password)
 
     def is_active(self):
-        return True
+        return not self.needs_activation
 
     def is_authenticated(self):
         return True

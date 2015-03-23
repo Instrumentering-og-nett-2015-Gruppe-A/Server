@@ -26,7 +26,7 @@
         {% for mailbox in mailboxes %}
             <div class="col-md-3">
                 <div class="panel panel-default tile_small center-block">
-                    <div class="panel-heading"> Mailbox id: {{ mailbox.id }}</div>
+                    <div class="panel-heading"> Mailbox  {{ mailbox.id }}</div>
                     <div class="panel-body" >
                         <div class="row">
                             <div class="col-md-12 tile_small_icon">
@@ -114,7 +114,7 @@
          $('#alertConfirm').click(function() {
          var mailbox = this.dataset['mailbox'];
          window.location = "/administrate/mailboxes/"+mailbox+"/free";
-        })
+        });
         $('.assign_form').hide();
         $('#removeUserAlert').hide()
 

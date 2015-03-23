@@ -1,4 +1,4 @@
-from flask_wtf import Form
+from flask_wtf import Form, RecaptchaField
 from sqlalchemy.sql.functions import current_user
 from wtforms import  ValidationError, IntegerField
 from wtforms.fields.core import StringField
@@ -9,12 +9,12 @@ from source.common.models import User, Session, Mailbox
 
 
 class MailboxLCDTextForm(Form):
-    first_line = StringField('first_line', validators=[InputRequired(),Length(max=16)])
-    second_line = StringField('second_line', validators=[InputRequired(),Length(max=16)])
+    first_line = StringField('First line', validators=[InputRequired(),Length(max=16)])
+    second_line = StringField('Second line', validators=[InputRequired(),Length(max=16)])
 
 class UserForm(Form):
     username = StringField('Username', validators=[Length(min=4), InputRequired()])
-    email = EmailField('Mail', validators=[InputRequired(), Email()])
+    email = EmailField('Email', validators=[InputRequired(), Email()])
     def validate_username(self, field):
         session = Session()
         if session.query(User).filter(User.username==field.data).count() > 0:
@@ -42,6 +42,15 @@ class AssignMailboxForm(Form):
         session = Session()
         if session.query(Mailbox).filter(User.id==field.data).count() == 0:
             raise ValidationError('Mailbox id out of range.')
+
+class AccountRecoveryForm(Form):
+
+    email = EmailField('Email', validators=[InputRequired(), Email()])
+    def validate_email(self, field):
+        session = Session()
+        if session.query(User).filter(User.email==field.data).count() ==0:
+            raise ValidationError('Could not find an account with that email.')
+
 
 class ChangePasswordForm(Form):
     def __init__(self, user, **kwargs):

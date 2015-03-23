@@ -22,8 +22,14 @@
                     {% if current_user.is_admin %}
                         <li><a href="{{ url_for('administrate_mailboxes')}}">Mailboxes</a></li>
                         <li><a href="{{ url_for('administrate_users')}}">Users</a></li>
-                    {% else %}
-                        <li><a href="#">My mailbox</a></li>
+                    {% elif not current_user.is_anonymous() %}
+                        <li><a href="{{ url_for('view_mailbox') }}">My mailbox
+                            {% if current_user.mailbox and current_user.mailbox.has_mail %}
+                                <span class="label label-success">You have mail!</span>
+                            {% else %}
+                                <span class="label label-danger">No mail.</span>
+                            {% endif %}
+                        </a></li>
                     {% endif %}
 
                 </ul>
@@ -34,7 +40,7 @@
                                 <p class="navbar-text">Not signed in.</p>
                             </li>
                             <li>
-                                 <a  href="#" >Login</a>
+                                 <a  href="{{ url_for('login') }}" >Login</a>
                             </li>
                         {% else %}
                             <li>
@@ -46,14 +52,9 @@
                         {% endif %}
                     </ul>
 
-
                 </div>
-
             </div>
-
-
         </div>
-
     </nav>
 <div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}

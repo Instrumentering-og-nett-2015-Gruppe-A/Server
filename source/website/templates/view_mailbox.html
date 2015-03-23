@@ -1,25 +1,38 @@
 {% extends "base.html" %}
+{% from "form_macros.html" import render_form %}
 {% block content %}
     {% if mailbox %}
-        <h1>Mail status</h1>
-        {% if mailbox.has_mail %}
-            You have mail!
-        {% else %}
-            No mail.
-        {% endif %}
-        <h1>Keys associated with this mailbox</h1>
-        {% for key in mailbox.keys %}
-            {{ key }}
-        {% endfor %}
-        <h1>Display</h1>
-        <form method="POST" action="">
-            {{ form.hidden_tag()}}
-            {{ form.first_line.label }} {{ form.first_line(size=20) }}
-            {{ form.second_line.label }} {{ form.second_line(size=20) }}
-            <input type="submit" value="Update Display">
-        </form>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-3 row ">
+
+             <div class="col-md-12"><span class="glyphicon glyphicon-inbox glyph-large"></span></div>
+            {%  if mailbox.has_mail %}
+                <span class="col-md-12 label label-success">You have mail</span>
+            {% else %}
+                <span class="col-md-12 label label-danger">No mail</span>
+            {% endif %}
+
+
+
+
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4 ">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p>LCD display</p>
+                </div>
+                <div class="panel-body">
+                    {{ render_form(form, action_url='', action_text='Update LCD') }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     {% else %}
-        There is no mailbox associated with your account. Please contact an administrator.
+        <h3 class="page-header" >There is no mailbox associated with your account. Please contact an administrator.</h3>
     {% endif %}
 {% endblock %}
 
