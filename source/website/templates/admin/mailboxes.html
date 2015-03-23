@@ -13,6 +13,14 @@
     {% else %}
         <h1>Mailboxes</h1>
     {% endif %}
+    <div class="alert alert-warning fade in" id="removeUserAlert">
+        <h4>Confirm</h4>
+        <p>You are about to remove a user from a mailbox. Are you sure?</p>
+        <p>
+            <button type="button" class="btn btn-danger" id="alertConfirm">Remove user</button>
+            <button type="button" class="btn btn-default" id="alertCancel">Cancel</button>
+        </p>
+    </div>
 
     <div class="row mailbox-container">
         {% for mailbox in mailboxes %}
@@ -26,7 +34,7 @@
                             </div>
                            {% if mailbox.user %}
 
-                                 <h3 class="text-center ">{{ mailbox.user }}<a class="" href="{{ url_for('free_mailbox', mailbox_id= mailbox.id) }}"><span class="glyphicon glyphicon-remove"/> </a></h3>
+                                 <h3 class="text-center ">{{ mailbox.user }}<a href="#" class="removeUserBtn" data-mailbox="{{ mailbox.id }}"><span class="glyphicon glyphicon-remove"/> </a></h3>
 
                            {% else %}
                            <div class="col-md-12 col-md">
@@ -84,20 +92,32 @@
             },5000)
         });
         $('#selectUserModal').on('show.bs.modal', function(e){
-            mailbox = e.relatedTarget.dataset['mailbox'];
+            var mailbox = e.relatedTarget.dataset['mailbox'];
             this.dataset['mailbox'] = mailbox;
         });
         $('.user-select').click(function(){
-            user = this.dataset['user'];
-            mailbox = $('#selectUserModal')[0].dataset['mailbox'];
-            console.log(mailbox)
-            form =  $('.assign_form');
+            var user = this.dataset['user'];
+            var mailbox = $('#selectUserModal')[0].dataset['mailbox'];
+            var form =  $('.assign_form');
             $('#user').val(user);
             $('#mailbox').val(mailbox);
             form.submit()
 
         });
+        $('.removeUserBtn').click(function() {
+            $('#removeUserAlert').show();
+            $('#alertConfirm')[0].dataset['mailbox'] = this.dataset['mailbox'];
+        });
+        $('#alertCancel').click(function() {
+            $('#removeUserAlert').hide();
+        });
+         $('#alertConfirm').click(function() {
+         var mailbox = this.dataset['mailbox'];
+         console.log(mailbox);
+         window.location = "/administrate/mailboxes/"+mailbox+"/free";
+        })
         $('.assign_form').hide();
+        $('#removeUserAlert').hide()
 
     </script>
 {% endblock %}
