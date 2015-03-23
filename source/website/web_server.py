@@ -10,12 +10,12 @@ from pip._vendor import requests
 from source.common.models import Session, Mailbox
 from source.common.utils import get_or_404
 from forms import MailboxLCDTextForm, LoginForm, UserForm, ChangePasswordForm, CreateAdministratorForm, \
-    SelectPasswordForm
+    SelectPasswordForm, AssignMailboxForm
 from source.common.models import User, Session
 from source.website.decorators import admin_required
 from source.website.util import send_user_confirmation_mail, get_username_from_confirmation_token
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import object_session
+from sqlalchemy.orm import object_session, eagerload, joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.utils import redirect
 
@@ -105,13 +105,34 @@ def create_user():
         return redirect(url_for('administrate_users'))
     return render_template('admin/create_user.html', form=form)
 
-@app.route('/administrate/mailboxes', methods=['GET'])
+@app.route('/administrate/mailboxes', methods=['GET', 'POST'])
 @admin_required
 def administrate_mailboxes():
     session= Session()
-    mailboxes = session.query(Mailbox).all()
-    print(mailboxes)
-    return render_template('admin/mailboxes.html', mailboxes=mailboxes)
+    if request.method == 'POST':
+        form = AssignMailboxForm(request.form)
+        if form.validate_on_submit():
+            user = session.query(User).get(form.user.data)
+            mailbox = session.query(Mailbox).get(form.mailbox.data)
+            user.mailbox = mailbox
+            session.commit()
+            flash('Mailbox %d assigned to %s' % (mailbox.id, user.username), 'success')
+
+    mailboxes = session.query(Mailbox).options(joinedload('user')).all()
+
+    users = session.query(User).filter(User.is_admin==False).filter(User.mailbox == None).all()
+    return render_template('admin/mailboxes.html', mailboxes=mailboxes, users=users, form=AssignMailboxForm())
+
+@app.route('/administrate/mailboxes/<int:mailbox_id>/free')
+@admin_required
+def free_mailbox(mailbox_id):
+    session = Session()
+    mailbox = session.query(Mailbox).options(joinedload('user')).filter(Mailbox.id==mailbox_id).first()
+    username = mailbox.user.username
+    mailbox.user = None
+    session.commit()
+    flash('%s removed from mailbox %d' % (username, mailbox.id), 'success')
+    return redirect(url_for('administrate_mailboxes'))
 
 @app.route('/administrate', methods=['GET', 'POST'])
 @admin_required

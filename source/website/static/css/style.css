@@ -22,6 +22,20 @@ body{
     text-align: center;
 }
 
+.tile_small{
+    width: 250px;
+    height: 200px;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+.tile_small_icon{
+    font-size: 5em;
+    margin: 0 auto;
+    text-align: center;
+}
+.mailbox-container{
+    margin-bottom: 30px;
+}
 /* centered columns styles */
 .row-centered {
     text-align:center;

@@ -1,11 +1,11 @@
 from flask_wtf import Form
 from sqlalchemy.sql.functions import current_user
-from wtforms import  ValidationError
+from wtforms import  ValidationError, IntegerField
 from wtforms.fields.core import StringField
 from wtforms.fields.html5 import EmailField
 from wtforms.fields.simple import PasswordField
 from wtforms.validators import Length, Required, EqualTo, Email, InputRequired
-from source.common.models import User, Session
+from source.common.models import User, Session, Mailbox
 
 
 class MailboxLCDTextForm(Form):
@@ -19,6 +19,7 @@ class UserForm(Form):
         session = Session()
         if session.query(User).filter(User.username==field.data).count() > 0:
             raise ValidationError('Username must be unique')
+
 class CreateAdministratorForm(UserForm):
     password = PasswordField('Password', validators=[InputRequired(),Length(min=8,message='Password must be at least 8 characters long.')])
     password_repeat =PasswordField('Repeat password', validators=[InputRequired(), EqualTo('password', message="Passwords must match")])
@@ -28,6 +29,19 @@ class CreateAdministratorForm(UserForm):
         if session.query(User).filter(User.username==field.data).count() > 0:
             raise ValidationError('Username must be unique')
 
+class AssignMailboxForm(Form):
+    user = IntegerField('User', validators=[InputRequired()])
+    mailbox = IntegerField('Mailbox', validators=[InputRequired()])
+
+    def validate_user(self, field):
+        session = Session()
+        if session.query(User).filter(User.id==field.data).count() == 0:
+            raise ValidationError('User id out of range.')
+
+    def validate_user(self, field):
+        session = Session()
+        if session.query(Mailbox).filter(User.id==field.data).count() == 0:
+            raise ValidationError('Mailbox id out of range.')
 
 class ChangePasswordForm(Form):
     def __init__(self, user, **kwargs):

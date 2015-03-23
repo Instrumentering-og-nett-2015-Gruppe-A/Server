@@ -35,7 +35,7 @@ class User(Base):
     email = Column(String)
     password_hash = Column(String )
     mailbox_id = Column(Integer, ForeignKey('mailboxes.id'), nullable=True)
-    mailbox = relationship('Mailbox',backref=backref('user'), uselist=False)
+    mailbox = relationship('Mailbox',backref=backref('user', uselist=False))
     is_admin = Column(Boolean, default=False)
     needs_password_reset = Column(Boolean, default=False)
     needs_activation = Column(Boolean, default=True)

@@ -1,63 +1,103 @@
 {% extends "base.html" %}
+{% from "form_macros.html" import render_form %}
 
 {% block head %}
     {{ super()}}
     <script src="{{ bower_url_for('spin.js', 'spin.js') }}"></script>
 {% endblock %}
 {% block content %}
-
-<div class="col-md-12 col-md-offset-3">
-    <div id="mailbox_panel" class="panel panel-default">
-        <div class="panel-heading">
-            Mailboxes
+    {% if mailboxes|length == 0 %}
+        <div class="col-md-12 col-md-offset-3">
+        <h3 class="page-header">No mailboxes found. Press the discover button to find new mailboxes.</h3>
         </div>
-        {% if mailboxes|length == 0 %}
-            <div class="panel-body">
+    {% else %}
+        <h1>Mailboxes</h1>
+    {% endif %}
 
-                    No mailboxes found. Press the discover button to find new mailboxes.
+    <div class="row mailbox-container">
+        {% for mailbox in mailboxes %}
+            <div class="col-md-3">
+                <div class="panel panel-default tile_small center-block">
+                    <div class="panel-heading"> Mailbox id: {{ mailbox.id }}</div>
+                    <div class="panel-body" >
+                        <div class="row">
+                            <div class="col-md-12 tile_small_icon">
+                                <span class="glyphicon glyphicon-inbox"/>
+                            </div>
+                           {% if mailbox.user %}
 
+                                 <h3 class="text-center ">{{ mailbox.user }}<a class="" href="{{ url_for('free_mailbox', mailbox_id= mailbox.id) }}"><span class="glyphicon glyphicon-remove"/> </a></h3>
+
+                           {% else %}
+                           <div class="col-md-12 col-md">
+                                <button type="button" data-mailbox="{{ mailbox.id }}" data-toggle="modal" data-target="#selectUserModal" class="btn btn-block">Select owner</button>
+                           </div>
+                           {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endif %}
-
-        <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Owner</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            {% for mailbox in mailboxes %}
-                <tr>
-                    <td>{{ mailbox.id }}</td>
-                    <td>{{ mailbox.user }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        {% endfor %}
     </div>
     <div class="col-md-12 col-md-offset-3">
-        <div id="spinner"></div>
+
+        <div class="col-md-1 col-md-offset-3">
+            <div id="spinner"></div>
+        </div>
+    </div>
+    <div class="col-md-1">
+         <button id="discover" class="btn btn-primary">Discover mailboxes</button>
     </div>
 
+    <div class="modal fade" id="selectUserModal" tabindex="-1" role="dialog"  aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close"  data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" >Select user</h4>
+          </div>
+          <div class="modal-body">
+            <div class="list-group">
+                {% for user in users %}
+                 <a class="list-group-item user-select" href="#" data-user="{{ user.id }}" >{{ user }}</a>
+                {% endfor %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 
-     <button id="discover" class="btn btn-primary">Discover mailboxes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-</div>
-<script type="text/javascript">
-    $('#discover').click(function () {
-        $(this).remove();
-        var spinner = new Spinner({top:0, left:0}).spin($('#spinner')[0]);
-        $.ajax({
-        url: "{{url_for('broadcast_server_address')}}"
-    });
-        setTimeout(function () {
-            window.location=""
-        },5000)
-    });
+    {{ render_form(form, class_='assign_form') }}
+    <script type="text/javascript">
+        $('#discover').click(function () {
+            $(this).remove();
+            var spinner = new Spinner({top:0, left:0}).spin($('#spinner')[0]);
+            $.ajax({
+            url: "{{url_for('broadcast_server_address')}}"
+        });
+            setTimeout(function () {
+                window.location=""
+            },5000)
+        });
+        $('#selectUserModal').on('show.bs.modal', function(e){
+            mailbox = e.relatedTarget.dataset['mailbox'];
+            this.dataset['mailbox'] = mailbox;
+        });
+        $('.user-select').click(function(){
+            user = this.dataset['user'];
+            mailbox = $('#selectUserModal')[0].dataset['mailbox'];
+            console.log(mailbox)
+            form =  $('.assign_form');
+            $('#user').val(user);
+            $('#mailbox').val(mailbox);
+            form.submit()
 
-</script>
+        });
+        $('.assign_form').hide();
 
-
+    </script>
 {% endblock %}
