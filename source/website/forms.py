@@ -43,6 +43,9 @@ class AssignMailboxForm(Form):
         if session.query(Mailbox).filter(User.id==field.data).count() == 0:
             raise ValidationError('Mailbox id out of range.')
 
+class UserEmailForm(Form):
+    email = EmailField('Email', validators=[InputRequired(), Email()])
+
 class AccountRecoveryForm(Form):
 
     email = EmailField('Email', validators=[InputRequired(), Email()])

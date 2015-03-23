@@ -10,7 +10,7 @@ from pip._vendor import requests
 from source.common.models import Session, Mailbox
 from source.common.utils import get_or_404
 from forms import MailboxLCDTextForm, LoginForm, UserForm, ChangePasswordForm, CreateAdministratorForm, \
-    SelectPasswordForm, AssignMailboxForm, AccountRecoveryForm
+    SelectPasswordForm, AssignMailboxForm, AccountRecoveryForm, UserEmailForm
 from source.common.models import User, Session
 from source.website.decorators import admin_required
 from source.website.util import send_user_confirmation_mail, get_username_from_confirmation_token, \
@@ -295,6 +295,24 @@ def recover_account(recovery_token):
 
     return render_template('/user/select_password.html', form=form)
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def user_profile():
+    if request.method == 'POST':
+        form = UserEmailForm(request.form)
+    else:
+        form = UserEmailForm(obj=current_user)
+
+    if form.validate_on_submit():
+        current_user.email = form.email.data
+        session = object_session(current_user)
+        if not session:
+            session = Session()
+            session.add(current_user)
+        session.commit()
+        flash('Email updated', 'success')
+
+    return render_template('user/user_profile.html', form=form)
 
 @app.route("/logout")
 @login_required

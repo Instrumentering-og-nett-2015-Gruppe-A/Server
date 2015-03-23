@@ -38,6 +38,10 @@ body{
     font-size: 15em;
 
 }
+
+.account-email-form{
+    margin-bottom: 5px;
+}
 .mailbox-container{
     margin-bottom: 30px;
 }

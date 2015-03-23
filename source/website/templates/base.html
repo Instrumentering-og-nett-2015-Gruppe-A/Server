@@ -30,6 +30,7 @@
                                 <span class="label label-danger">No mail.</span>
                             {% endif %}
                         </a></li>
+                        <li><a href="{{ url_for('user_profile') }}">Profile</a></li>
                     {% endif %}
 
                 </ul>
@@ -44,7 +45,7 @@
                             </li>
                         {% else %}
                             <li>
-                                <p class="navbar-text">Signed in as {{ current_user }}.</p>
+                                <p class="navbar-text">Signed in as <a href= "{{ url_for('user_profile') }}">{{ current_user }} </a>.</p>
                             </li>
                             <li>
                                  <a  href="{{ url_for('logout') }}" >Logout</a>

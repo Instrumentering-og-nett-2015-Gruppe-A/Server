@@ -2,6 +2,7 @@
 {% from "form_macros.html" import render_form %}
 {% block content %}
     {% if mailbox %}
+    <h1 class="page-header center-block ">Mailbox {{ mailbox.id }}</h1>
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-3 row ">
@@ -12,9 +13,6 @@
             {% else %}
                 <span class="col-md-12 label label-danger">No mail</span>
             {% endif %}
-
-
-
 
         </div>
         <div class="col-md-1"></div>
