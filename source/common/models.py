@@ -18,8 +18,6 @@ class Mailbox(Base):
     opens_in = Column(BigInteger, default= None)
     display_text = Column(String, default="")
 
-    def __init__(self):
-        self.first_line = "hurdurr"
 
 class MailboxKey(Base):
     __tablename__ = 'mailboxkeys'
