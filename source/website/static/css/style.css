@@ -1,0 +1,52 @@
+body{
+    background: #eee;
+}
+.credentials_form{
+    max-width: 380px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    margin-top: 100px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+.tile{
+    width: 400px;
+    height: 400px;
+    margin-top: 50px;
+}
+.tile span.glyphicon{
+    font-size: 10em;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* centered columns styles */
+.row-centered {
+    text-align:center;
+
+}
+.col-centered {
+    display:inline-block;
+    vertical-align: middle;
+
+    float:none;
+    margin-right:-4px;
+}
+
+
+
+#user_panel{
+    max-width: 600px;
+}
+#mailbox_panel{
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+a{
+    color:inherit;
+}
+.list-group-item a{
+    float: right;
+}

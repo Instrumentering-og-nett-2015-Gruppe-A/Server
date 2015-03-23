@@ -12,9 +12,4 @@ api = Api(app)
 api.add_resource(Mailboxes.Mailbox, '/api/mailbox', endpoint="list_mailbox")
 api.add_resource(Mailboxes.Mailbox, '/api/mailbox/<int:mailbox_id>', endpoint="mailbox")
 
-@app.route('/broadcast/')
-def broadcast_server_address():
-    address = socket.gethostbyname(socket.gethostname())
-    print address
-    udp_broadcast(address)
-    return Response(status=200)
+

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row row-centered">
+    <div class="tile col-md-6 col-centered"  >
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            Users
+         </div>
+         <div class="panel-body">
+            <a href="{{ url_for('administrate_users')}}" ><span class="glyphicon glyphicon-user"/></a>
+        </div>
+      </div>
+    </div>
+    <div class="tile col-md-6 col-centered">
+      <div class="panel panel-default">
+         <div class="panel-heading">
+             Mailboxes
+         </div>
+         <div class="panel-body">
+            <a href="{{ url_for('administrate_mailboxes')}}"> <span class="glyphicon glyphicon-inbox"/></a>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}

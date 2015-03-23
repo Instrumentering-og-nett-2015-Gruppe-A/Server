@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if mailbox %}
+        <h1>Mail status</h1>
+        {% if mailbox.has_mail %}
+            You have mail!
+        {% else %}
+            No mail.
+        {% endif %}
+        <h1>Keys associated with this mailbox</h1>
+        {% for key in mailbox.keys %}
+            {{ key }}
+        {% endfor %}
+        <h1>Display</h1>
+        <form method="POST" action="">
+            {{ form.hidden_tag()}}
+            {{ form.first_line.label }} {{ form.first_line(size=20) }}
+            {{ form.second_line.label }} {{ form.second_line(size=20) }}
+            <input type="submit" value="Update Display">
+        </form>
+    {% else %}
+        There is no mailbox associated with your account. Please contact an administrator.
+    {% endif %}
+{% endblock %}
+

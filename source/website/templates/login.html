@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "form_macros.html" import render_form %}
+{% block content %}
+
+    <div class="credentials_form">
+        <h2>Sign in</h2>
+         {{ render_form(form, action_url='', action_text='Login')}}
+
+    </div>
+
+{% endblock %}

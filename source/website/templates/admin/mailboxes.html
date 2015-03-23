@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super()}}
+    <script src="{{ bower_url_for('spin.js', 'spin.js') }}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="col-md-12 col-md-offset-3">
+    <div id="mailbox_panel" class="panel panel-default">
+        <div class="panel-heading">
+            Mailboxes
+        </div>
+        {% if mailboxes|length == 0 %}
+            <div class="panel-body">
+
+                    No mailboxes found. Press the discover button to find new mailboxes.
+
+            </div>
+        {% endif %}
+
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Owner</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for mailbox in mailboxes %}
+                <tr>
+                    <td>{{ mailbox.id }}</td>
+                    <td>{{ mailbox.user }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="col-md-12 col-md-offset-3">
+        <div id="spinner"></div>
+    </div>
+
+
+     <button id="discover" class="btn btn-primary">Discover mailboxes</button>
+
+</div>
+<script type="text/javascript">
+    $('#discover').click(function () {
+        $(this).remove();
+        var spinner = new Spinner({top:0, left:0}).spin($('#spinner')[0]);
+        $.ajax({
+        url: "{{url_for('broadcast_server_address')}}"
+    });
+        setTimeout(function () {
+            window.location=""
+        },5000)
+    });
+
+</script>
+
+
+{% endblock %}
