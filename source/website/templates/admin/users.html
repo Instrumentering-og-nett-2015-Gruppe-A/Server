@@ -8,7 +8,10 @@
 
         <ul class="list-group">
             {% for user in users %}
-                <li class="list-group-item">{{ user }} <a href="{{ url_for('delete_user', id= user.id) }}"><span class="glyphicon glyphicon-remove"/> </a></li>
+                <li class="list-group-item">{{ user }}
+                    {%  if user.needs_activation %} <span class="label label-info">Needs confirmation</span> {%  endif %}
+                    <a href="{{ url_for('delete_user', id= user.id) }}"><span class="glyphicon glyphicon-remove"/> </a>
+                 </li>
             {% endfor %}
             <a href="{{ url_for('create_user')}}" class="list-group-item">New user</a>
         </ul>

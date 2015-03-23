@@ -6,7 +6,7 @@ from sqlite3 import dbapi2 as sqlite
 from werkzeug.security import generate_password_hash, check_password_hash
 
 Base = declarative_base()
-engine = create_engine('sqlite://', module=sqlite)
+engine = create_engine('sqlite:///database.db', module=sqlite)
 Session = sessionmaker(bind=engine)
 
 
@@ -63,4 +63,4 @@ class User(Base):
         return self.id
 
     def __str__(self):
-
+        return self.username

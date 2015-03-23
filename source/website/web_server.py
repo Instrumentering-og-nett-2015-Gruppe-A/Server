@@ -208,6 +208,7 @@ def confirm(confirmation_token):
     if request.method == 'POST':
         form = SelectPasswordForm(request.form)
     else:
+        flash("Please create a password to confirm your account.", 'info')
         form = SelectPasswordForm()
 
     if form.validate_on_submit():
@@ -228,6 +229,7 @@ def logout():
 def load_user(user_id):
     session = Session()
     return session.query(User).get(user_id)
+
 app.login_manager.user_loader(load_user)
 
 @app.route('/broadcast')
