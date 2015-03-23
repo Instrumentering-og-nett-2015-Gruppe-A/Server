@@ -6,7 +6,7 @@ from sqlite3 import dbapi2 as sqlite
 from werkzeug.security import generate_password_hash, check_password_hash
 
 Base = declarative_base()
-engine = create_engine('sqlite+pysqlite:///:database.db:', module=sqlite)
+engine = create_engine('sqlite://', module=sqlite)
 Session = sessionmaker(bind=engine)
 
 
@@ -24,7 +24,7 @@ class Mailbox(Base):
 class MailboxKey(Base):
     __tablename__ = 'mailboxkeys'
     rfid = Column(String, primary_key=True)
-    mailbox_id = Column(Integer, ForeignKey('mailboxes.id'), primary_key=True)
+    mailbox_id = Column(Integer, ForeignKey('mailboxes.id'), primary_key=True, autoincrement=True)
     mailbox = relationship("Mailbox", backref=backref('keys'))
 
     def __unicode__(self):
@@ -65,4 +65,4 @@ class User(Base):
         return self.id
 
     def __str__(self):
-        return self.username
+
