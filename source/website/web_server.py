@@ -5,8 +5,6 @@ from flask_bower import Bower
 from source.common.udp_brodcast import send as broadcast
 import socket
 from flask_wtf import CsrfProtect
-from itsdangerous import Signer
-from pip._vendor import requests
 from source.common.models import Session, Mailbox
 from source.common.utils import get_or_404
 from forms import MailboxLCDTextForm, LoginForm, UserForm, ChangePasswordForm, CreateAdministratorForm, \
@@ -15,9 +13,7 @@ from source.common.models import User, Session
 from source.website.decorators import admin_required
 from source.website.util import send_user_confirmation_mail, get_username_from_confirmation_token, \
     send_account_recovery_mail, get_username_from_recovery_token
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import object_session, eagerload, joinedload
-from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.utils import redirect
 
 app = Flask(__name__)
