@@ -1,7 +1,7 @@
 from datetime import timedelta
 from flask import url_for
 from itsdangerous import Signer, BadSignature, TimestampSigner, SignatureExpired
-from pip._vendor import requests
+import requests
 
 
 def send_user_confirmation_mail(app, user):
